@@ -1,8 +1,16 @@
 package cn.edu.sustech.cs209.chatting.server;
 
-public class Main {
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
+public class Main {
     public static void main(String[] args) {
-        System.out.println("Starting server");
+        // Create a server socket
+        Server server = new Server();
+        server.start();
     }
 }
+
