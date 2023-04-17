@@ -18,9 +18,17 @@
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="cn.edu.sustech.cs209.chatting.client.Controller">
     <MenuBar VBox.vgrow="NEVER">
-        <Menu mnemonicParsing="false" text="Chat">
+        <Menu mnemonicParsing="false" text="New">
             <MenuItem mnemonicParsing="false" onAction="#createPrivateChat" text="New Private Chat"/>
             <MenuItem mnemonicParsing="false" onAction="#createGroupChat" text="New Group Chat"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="User">
+            <MenuItem mnemonicParsing="false" onAction="#register" text="Register User"/>
+            <MenuItem mnemonicParsing="false" onAction="#changePwd" text="Change Pwd"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Chat">
+            <MenuItem mnemonicParsing="false" onAction="#sendFile" text="Send File"/>
+            <MenuItem mnemonicParsing="false" onAction="#showInformation" text="Show Information"/>
         </Menu>
     </MenuBar>
     <SplitPane dividerPositions="0.25" focusTraversable="true" VBox.vgrow="ALWAYS">
@@ -38,7 +46,7 @@
         <padding>
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
         </padding>
-        <Label fx:id="currentUsername" maxHeight="1.7976931348623157E308"
+        <Label fx:id="currentUserName" maxHeight="1.7976931348623157E308"
                text="Current User: USERNAME" HBox.hgrow="ALWAYS">
             <font>
                 <Font size="11.0" fx:id="x3"/>

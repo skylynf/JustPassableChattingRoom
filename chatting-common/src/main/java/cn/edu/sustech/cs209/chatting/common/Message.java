@@ -32,4 +32,24 @@ public class Message {
     public String getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(timestamp).append(",");
+        sb.append(sentBy).append(",");
+        sb.append(sendTo).append(",");
+        sb.append(data.replaceAll(",", "\\,"));
+        return sb.toString();
+    }
+
+    public static Message fromString(String str) {
+        String[] parts = str.split(",", 4);
+        Long timestamp = Long.parseLong(parts[0]);
+        String sentBy = parts[1];
+        String sendTo = parts[2];
+        String data = parts[3].replaceAll("\\\\,", ",");
+        return new Message(timestamp, sentBy, sendTo, data);
+    }
+
 }
