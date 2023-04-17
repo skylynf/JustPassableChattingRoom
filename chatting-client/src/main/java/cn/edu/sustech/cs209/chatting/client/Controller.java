@@ -17,9 +17,9 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -44,7 +44,7 @@ public class Controller implements Initializable {
 
     @FXML
     ListView<String> chatList;
-    Set<String> NewMsgList = new HashSet<>();
+    Set<String> newMsgList = new HashSet<>();
 
     Map<String, List<Message>> chatContent = new ConcurrentHashMap<>();
 
@@ -75,7 +75,7 @@ public class Controller implements Initializable {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new PrintWriter(socket.getOutputStream(), true);
 
-    // start a new thread to read messages from the server
+            // start a new thread to read messages from the server
 
             new Thread(() -> {
                 while (true) {
@@ -94,15 +94,15 @@ public class Controller implements Initializable {
                         // process the incoming message from the server
                         String[] names;
                         if (message.startsWith("[clients] ")) {
-                            if(!message.contains(",")){
+                            if (!message.contains(",")) {
                                 names = null;
-                            }else {
+                            } else {
                                 if (message.endsWith(",")) {
                                     message = message.substring(0, message.length() - 1);
                                 }
                                 names = message.substring(10).split(",");
                             }
-                            if(names!= null){
+                            if (names != null) {
                                 clientNames.clear();
                                 clientNames.addAll(Arrays.asList(names));
                             }
@@ -127,69 +127,36 @@ public class Controller implements Initializable {
 
                             System.out.println(msg.getData());
 
-                            if (target.startsWith("GROUP[")){
-                                if(chatContent.containsKey(target)){
+                            if (target.startsWith("GROUP[")) {
+                                if (chatContent.containsKey(target)) {
                                     chatContent.get(target).add(msg);
-                                    if(!Objects.equals(nowShowing, target)) {
-//                                        Platform.runLater(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                if (chatList.getItems().contains(target + " (New Msg)")) {
-//                                                    chatList.getItems().remove(target + " (New Msg)");
-//                                                }else chatList.getItems().remove(target);
-//                                                chatList.getItems().add(target + " (New Msg)");
-//                                            }
-//                                        });
-                                        NewMsgList.add(target);
+                                    if (!Objects.equals(nowShowing, target)) {
+                                        newMsgList.add(target);
                                     }
-                                }else{
+                                } else {
                                     List<Message> messages = new ArrayList<>();
                                     messages.add(msg);
                                     chatContent.put(target, messages);
-//                                    Platform.runLater(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            chatList.getItems().add(target+" (New Msg)");
-//                                        }
-//                                    });
-                                    NewMsgList.add(target);
+                                    newMsgList.add(target);
                                 }
-                            }else if (sender.equals(username)){
-                                if(chatContent.containsKey(target)){
+                            } else if (sender.equals(username)) {
+                                if (chatContent.containsKey(target)) {
                                     chatContent.get(target).add(msg);
-                                }else{
+                                } else {
                                     List<Message> messages = new ArrayList<>();
                                     messages.add(msg);
                                     chatContent.put(target, messages);
                                 }
-                            }
-                            else if (chatContent.containsKey(sender)) {
+                            } else if (chatContent.containsKey(sender)) {
                                 chatContent.get(sender).add(msg);
-                                if(!Objects.equals(nowShowing, sender)) {
-//                                    Platform.runLater(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            if (chatList.getItems().contains(sender + " (New Msg)")) {
-//                                                chatList.getItems().remove(sender + " (New Msg)");
-//                                            }else chatList.getItems().remove(sender);
-//                                            chatList.getItems().add(sender + " (New Msg)");
-//                                        }
-
-//                                    });
-
-                                    NewMsgList.add(sender);
+                                if (!Objects.equals(nowShowing, sender)) {
+                                    newMsgList.add(sender);
                                 }
                             } else {
                                 List<Message> messages = new ArrayList<>();
                                 messages.add(msg);
                                 chatContent.put(sender, messages);
-//                                Platform.runLater(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        chatList.getItems().add(sender+" (New Msg)");
-//                                    }
-//                                });
-                                NewMsgList.add(sender);
+                                newMsgList.add(sender);
                             }
 
                             updateChatList();
@@ -197,12 +164,12 @@ public class Controller implements Initializable {
                             Platform.runLater(this::updateChatWindow);
                         }
 
-                        if(message.startsWith("[loginResult]")){
-                            if(message.endsWith("success")){
+                        if (message.startsWith("[loginResult]")) {
+                            if (message.endsWith("success")) {
                                 loginState = 1;
-                            }else if (message.endsWith("fail")){
+                            } else if (message.endsWith("fail")) {
                                 loginState = 2;
-                            }else if (message.endsWith("new")){
+                            } else if (message.endsWith("new")) {
                                 loginState = 3;
                             }
                         }
@@ -237,14 +204,14 @@ public class Controller implements Initializable {
                Check if there is a user with the same name among the currently logged-in users,
                      if so, ask the user to change the username
              */
-            while(!clientNamesValid){
+            while (!clientNamesValid) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            while(clientNames.contains(input.get())) {
+            while (clientNames.contains(input.get())) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
@@ -254,9 +221,9 @@ public class Controller implements Initializable {
             }
             username = input.get();
 
-            if(login(username)){
+            if (login(username)) {
                 System.out.println("Login success");
-            }else{
+            } else {
                 System.out.println("Login failed");
                 Platform.exit();
                 System.exit(0);
@@ -281,17 +248,17 @@ public class Controller implements Initializable {
                             setText(null);
                             setGraphic(null);
                         } else {
-                            if(s.startsWith("GROUP[")){
+                            if (s.startsWith("GROUP[")) {
                                 setText(getGroupName(s));
-                            }else {
+                            } else {
                                 setText(s);
                             }
-                            assert NewMsgList.contains(nowShowing);
-                            if(NewMsgList.contains(s)){
+                            assert newMsgList.contains(nowShowing);
+                            if (newMsgList.contains(s)) {
                                 setTextFill(Color.BLUE);
-                            } else if(Objects.equals(s, nowShowing)){
+                            } else if (Objects.equals(s, nowShowing)) {
                                 setTextFill(Color.RED);
-                            } else{
+                            } else {
                                 setTextFill(Color.BLACK);
                             }
                         }
@@ -302,7 +269,7 @@ public class Controller implements Initializable {
 
         chatList.setOnMouseClicked(event -> {
                 String selected = chatList.getSelectionModel().getSelectedItem();
-                NewMsgList.remove(selected);
+                newMsgList.remove(selected);
                 System.out.println("selected:" + selected);
                 nowShowing = selected;
                 Platform.runLater(() -> {
@@ -311,27 +278,6 @@ public class Controller implements Initializable {
                 });
 
         });
-//
-//        chatList.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
-//            String selected = t1;
-//            NewMsgList.remove(selected);
-////
-////            String selected = t1;
-////            if (t1.endsWith("(New Msg)")) {
-////                selected = t1.substring(0, t1.length() - 10);
-////                nowShowing = selected;
-////                Platform.runLater(() -> {
-////                    chatList.getItems().remove(t1);
-////                    chatList.getItems().add(t1.substring(0, t1.length() - 10));
-////                });
-////            }
-//            System.out.println("selected:" + selected);
-//            nowShowing = selected;
-//            Platform.runLater(() -> {
-//                updateChatList();
-//                updateChatWindow();
-//            });
-//        });
 
         lastHeartbeatTime = System.currentTimeMillis();
         heartbeatExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -339,12 +285,12 @@ public class Controller implements Initializable {
 
         //pop window for 1 second telling recovering history
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        if(loginState ==1) {
+        if (loginState == 1) {
             alert.setTitle("Recovering history");
             alert.setHeaderText(null);
             alert.setContentText("Recovering history...");
             alert.show();
-        }else if(loginState==3){
+        } else if (loginState == 3) {
             alert.setTitle("New user");
             alert.setHeaderText(null);
             alert.setContentText("New user, welcome");
@@ -354,13 +300,12 @@ public class Controller implements Initializable {
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
-                latch.countDown(); // 减少计数器
+                latch.countDown();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }).start();
 
-// 等待计数器归零
         try {
             latch.await();
         } catch (InterruptedException e) {
@@ -372,15 +317,15 @@ public class Controller implements Initializable {
 
     }
 
-    public String getGroupName(String name){
+    public String getGroupName(String name) {
         assert !name.startsWith("GROUP[");
         String[] names = name.split("\\[")[1].split("]")[0].split("/");
         String returnName;
         returnName = names[0] + ", " + names[1];
-        if(names.length>2){
+        if (names.length > 2) {
             returnName += ", " + names[2];
         }
-        if(names.length>3){
+        if (names.length > 3) {
             returnName += "...";
         }
         returnName += " (" + names.length + ")";
@@ -388,16 +333,16 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void showInformation(){
+    public void showInformation() {
         //pop out a dialog show nowShowing information
-        if(nowShowing.startsWith("GROUP[")){
+        if (nowShowing.startsWith("GROUP[")) {
             String[] names = nowShowing.split("\\[")[1].split("]")[0].split("/");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Group Information");
             alert.setHeaderText(null);
             alert.setContentText("Group Users: " + Arrays.toString(names));
             alert.show();
-        }else {
+        } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("User Information");
             alert.setHeaderText(null);
@@ -407,7 +352,7 @@ public class Controller implements Initializable {
 
     }
 
-    public boolean login(String username){
+    public boolean login(String username) {
         //login a user to the server
         //get password from user
         Dialog<String> dialog = new TextInputDialog();
@@ -420,7 +365,7 @@ public class Controller implements Initializable {
         output.println("[login] "+username+ " " +input.get());
         //wait for server
         long loginStartTime = System.currentTimeMillis();
-        while(loginState == 0 && loginStartTime + 5000 > System.currentTimeMillis()){
+        while (loginState == 0 && loginStartTime + 5000 > System.currentTimeMillis()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -428,9 +373,9 @@ public class Controller implements Initializable {
             }
         }
         System.out.println(loginState);
-        if(loginState == 1 || loginState == 3){
+        if (loginState == 1 || loginState == 3) {
             return true;
-        }else if(loginState == 2){
+        }else if (loginState == 2) {
             //tell wrong password
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -438,7 +383,7 @@ public class Controller implements Initializable {
             alert.setContentText("Wrong password");
             alert.showAndWait();
             return false;
-        }else{
+        } else {
             //tell server error
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -450,7 +395,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void changePwd(){
+    public void changePwd() {
         //register a user to the server
         Dialog<String> dialog = new TextInputDialog();
         dialog.setTitle("ChangePwd");
@@ -470,7 +415,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void register(){
+    public void register() {
         //register a user to the server
         Dialog<String> dialog = new TextInputDialog();
         dialog.setTitle("Register");
@@ -493,9 +438,9 @@ public class Controller implements Initializable {
     private void heartbeat() {
         output.println("[heartbeat]");
         // detect server state
-        if(System.currentTimeMillis() - lastHeartbeatTime > HEARTBEAT_INTERVAL * 2) {
+        if (System.currentTimeMillis() - lastHeartbeatTime > HEARTBEAT_INTERVAL * 2) {
             System.out.println("Server is down");
-            if(!serverState){
+            if (!serverState) {
                 return;
             }
             serverState =false;
@@ -514,10 +459,10 @@ public class Controller implements Initializable {
         //make chatlist sort by timestamp
         List<String> chatListItems = new ArrayList<>(chatContent.keySet());
         chatListItems.sort((o1, o2) -> {
-            if(chatContent.get(o1).size() == 0) {
+            if (chatContent.get(o1).size() == 0) {
                 return 1;
             }
-            if(chatContent.get(o2).size() == 0) {
+            if (chatContent.get(o2).size() == 0) {
                 return -1;
             }
             return chatContent.get(o2)
@@ -527,16 +472,6 @@ public class Controller implements Initializable {
                             .get(chatContent.get(o1).size() - 1)
                             .getTimestamp());
         });
-//        for (String s : chatList.getItems()) {
-//            System.out.println(s);
-//            if(s.contains("(New Msg)")){
-//                if(chatListItems.contains(s.substring(0, s.length() - 10))){
-//                    chatListItems.remove(s.substring(0, s.length() - 10));
-//                    chatListItems.add(s);
-//                }
-//            }
-//        }
-        //update chatlist
         ObservableList<String> newItems =
                 FXCollections.observableArrayList(chatListItems);
 
@@ -547,7 +482,7 @@ public class Controller implements Initializable {
 
     public void updateChatWindow() {
         chatContentList.getItems().clear();
-        if(nowShowing != null)
+        if (nowShowing != null)
             chatContentList.getItems().addAll(chatContent.get(nowShowing));
     }
 
@@ -557,7 +492,7 @@ public class Controller implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         File file = fileChooser.showOpenDialog(null);
-        if(file != null) {
+        if (file != null) {
             try {
                 byte[] fileContent = Files.readAllBytes(file.toPath());
                 String data = "/file " + file.getName() + " " + Arrays.toString(fileContent);
@@ -645,7 +580,7 @@ public class Controller implements Initializable {
         // Retrieve list of user names from your data source
         List<String> userNames = new ArrayList<>();
         for (String name: clientNames) {
-            if(!name.startsWith("GROUP[") && !name.equals(username))
+            if (!name.startsWith("GROUP[") && !name.equals(username))
                 userNames.add(name);
         }
 
@@ -792,7 +727,7 @@ public class Controller implements Initializable {
 
                     Label msgLabel;
                     //deal with file
-                    if(msg.getData().startsWith("/file ")){
+                    if (msg.getData().startsWith("/file ")) {
                         msgLabel = new Label("File");
                         msgLabel.setTextFill(Color.BLUE);
                         msgLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -825,7 +760,7 @@ public class Controller implements Initializable {
                                 }
                             }
                         });
-                    }else{
+                    } else {
                             msgLabel = new Label(msg.getData());
                         }
 
