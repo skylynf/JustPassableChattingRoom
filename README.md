@@ -1,3 +1,7 @@
+# Notice
+
+Please notice that this is a course Assignment for SUSTech CS department course CS209A.
+
 # 🫧 Chatting
 
 ![CourseInfo](https://img.shields.io/badge/sustech--cs209-23sp%3Aassign2-brightgreen)
