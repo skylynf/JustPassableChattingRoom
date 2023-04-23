@@ -2,10 +2,7 @@ package cn.edu.sustech.cs209.chatting.server;
 
 import cn.edu.sustech.cs209.chatting.common.Message;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Arrays;
@@ -137,8 +134,10 @@ public class ChatClientHandler implements Runnable {
     }
 
     public void sendMessage(Message msg) {
-        //send message with client name
-        out.println("[message] "+ msg.toString());
+
+        System.out.println("[message] " + msg.toString());
+        out.println("[message] " + msg.toString());
+
     }
 
     private void handleMessage(String message) {
@@ -152,12 +151,13 @@ public class ChatClientHandler implements Runnable {
             out.println(clientsList);
         } else if(message.startsWith("[send]")){
             String[] split = message.split(" ",2);
+
             Message msg = Message.fromString(split[1]);
 
             chatServer.saveHistoryMessage(msg);
 
             String target = msg.getSendTo();
-            String data = msg.getData();
+            // String data = msg.getData();
 
             if(target.startsWith("GROUP[")){
                 String[] targets = target.split("\\[")[1].split("]")[0].split("/");
