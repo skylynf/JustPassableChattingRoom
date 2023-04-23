@@ -1,5 +1,8 @@
 package cn.edu.sustech.cs209.chatting.common;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 public class Message {
 
     private Long timestamp;
@@ -40,11 +43,24 @@ public class Message {
         sb.append(sentBy).append(",");
         sb.append(sendTo).append(",");
         sb.append(data.replaceAll(",", "\\,"));
-        return sb.toString();
+        String original = sb.toString();
+        String encoded = "";
+        try {
+            encoded = URLEncoder.encode(original, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return encoded;
     }
 
     public static Message fromString(String str) {
-        String[] parts = str.split(",", 4);
+        String decoded = "";
+        try {
+            decoded = java.net.URLDecoder.decode(str, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String[] parts = decoded.split(",", 4);
         Long timestamp = Long.parseLong(parts[0]);
         String sentBy = parts[1];
         String sendTo = parts[2];
