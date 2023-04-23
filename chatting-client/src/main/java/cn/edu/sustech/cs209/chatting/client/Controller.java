@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Controller implements Initializable {
 
-    private final String[] EMOJIS = {
+    private final String[] emojis = {
             "\uD83D\uDE00", // 😄
             "\uD83D\uDE01", // 😁
             "\uD83D\uDE02", // 😂
@@ -167,8 +167,8 @@ public class Controller implements Initializable {
         emojiGrid.setPadding(new Insets(4));
 
         int i = 0;
-        Button[] emojiButtons = new Button[EMOJIS.length];
-        for (String emoji : EMOJIS) {
+        Button[] emojiButtons = new Button[emojis.length];
+        for (String emoji : emojis) {
             Button button = new Button(emoji);
             button.setOnAction(event -> {
                 inputArea.appendText(emoji);
@@ -177,7 +177,7 @@ public class Controller implements Initializable {
             emojiButtons[i++] = button;
         }
 
-        for (i = 0; i < EMOJIS.length; i++) {
+        for (i = 0; i < emojis.length; i++) {
             emojiGrid.add(emojiButtons[i], i % 8, i / 8);
         }
 
@@ -480,11 +480,11 @@ public class Controller implements Initializable {
         Dialog<String> dialog = new TextInputDialog();
         dialog.setTitle("Login");
         dialog.setHeaderText(null);
-        dialog.setContentText("If registered, input password, otherwise press enter."+username+":");
+        dialog.setContentText("If registered, input password, otherwise press enter." + username + ":");
 
         Optional<String> input = dialog.showAndWait();
-        loginState=0;
-        output.println("[login] "+username+ " " +input.get());
+        loginState = 0;
+        output.println("[login] " + username +  " " + input.get());
         //wait for server
         long loginStartTime = System.currentTimeMillis();
         while (loginState == 0 && loginStartTime + 5000 > System.currentTimeMillis()) {
@@ -497,7 +497,7 @@ public class Controller implements Initializable {
         System.out.println(loginState);
         if (loginState == 1 || loginState == 3) {
             return true;
-        }else if (loginState == 2) {
+        } else if (loginState == 2) {
             //tell wrong password
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -526,7 +526,7 @@ public class Controller implements Initializable {
 
         Optional<String> input = dialog.showAndWait();
         if (input.isPresent() && !input.get().isEmpty()) {
-            output.println("[register] "+input.get());
+            output.println("[register] " + input.get());
         }
         //pop a window to tell success
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -546,7 +546,7 @@ public class Controller implements Initializable {
 
         Optional<String> input = dialog.showAndWait();
         if (input.isPresent() && !input.get().isEmpty()) {
-            output.println("[register] "+input.get());
+            output.println("[register] " + input.get());
         }
         //pop a window to tell success
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -556,7 +556,7 @@ public class Controller implements Initializable {
         alert.showAndWait();
     }
 
-    private boolean serverState=true;
+    private boolean serverState = true;
     private void heartbeat() {
         output.println("[heartbeat]");
         // detect server state
@@ -565,7 +565,7 @@ public class Controller implements Initializable {
             if (!serverState) {
                 return;
             }
-            serverState =false;
+            serverState = false;
             Platform.runLater(() -> {
                 currentOnlineCnt.setText("Server Down");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
