@@ -54,23 +54,23 @@ public class ChatClientHandler implements Runnable {
                String pwd = split[2];
                //check pwd
                int checkResult = chatServer.checkAccount(username, pwd);
-               if(checkResult==1){
+               if (checkResult==1){
                    out.println("[loginResult] success");
                    clientName = username;
                    //recovery history
                    List<Message> historyMessage = chatServer.getHistoryMessage(username);
-                   for(Message msg : historyMessage){
+                   for (Message msg : historyMessage) {
                        out.println("[message] "+ msg.toString());
                    }
-               }else if(checkResult==0){
+               } else if (checkResult==0){
                    out.println("[loginResult] fail");
                    chatServer.removeClient(this);
                    clientSocket.close();
-               }else if(checkResult==2){
+               } else if (checkResult==2){
                    out.println("[loginResult] new");
                    clientName = username;
                }
-            } else{
+            } else {
                 chatServer.removeClient(this);
                 clientSocket.close();
             }
@@ -114,7 +114,7 @@ public class ChatClientHandler implements Runnable {
 
     private void heartbeat() {
         out.println("[heartbeat]");
-        if(System.currentTimeMillis() - lastHeartbeatTime > HEARTBEAT_INTERVAL * 2) {
+        if (System.currentTimeMillis() - lastHeartbeatTime > HEARTBEAT_INTERVAL * 2) {
             System.out.println("Client is down");
             chatServer.removeClient(this);
             StringBuilder clientsList = new StringBuilder("[clients] ");
@@ -142,14 +142,14 @@ public class ChatClientHandler implements Runnable {
 
     private void handleMessage(String message) {
         // Handle incoming messages from the client
-        if(Objects.equals(message, "getUsers")){
+        if (Objects.equals(message, "getUsers")){
             StringBuilder clientsList = new StringBuilder("[clients] ");
             for (String name : chatServer.getClients().keySet()) {
                 clientsList.append(name).append(",");
             }
             System.out.println(clientsList);
             out.println(clientsList);
-        } else if(message.startsWith("[send]")){
+        } else if (message.startsWith("[send]")){
             String[] split = message.split(" ",2);
 
             Message msg = Message.fromString(split[1]);
@@ -159,14 +159,14 @@ public class ChatClientHandler implements Runnable {
             String target = msg.getSendTo();
             // String data = msg.getData();
 
-            if(target.startsWith("GROUP[")){
+            if (target.startsWith("GROUP[")){
                 String[] targets = target.split("\\[")[1].split("]")[0].split("/");
                 System.out.println(Arrays.toString(targets));
                 for(String t : targets){
-                    if(!Objects.equals(t, clientName) && chatServer.getClients().containsKey(t))
+                    if (!Objects.equals(t, clientName) && chatServer.getClients().containsKey(t))
                         chatServer.getClients().get(t).sendMessage(msg);
                 }
-            }else {
+            } else {
                 chatServer.getClients().get(target).sendMessage(msg);
             }
         } else if (message.startsWith("[heartbeat]")){
