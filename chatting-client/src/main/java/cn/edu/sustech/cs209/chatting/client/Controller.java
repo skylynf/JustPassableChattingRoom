@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Controller implements Initializable {
 
-    private final String[] EMOJIS = {
+    private final String[] emojis = {
             "\uD83D\uDE00", // 😄
             "\uD83D\uDE01", // 😁
             "\uD83D\uDE02", // 😂
@@ -167,8 +167,8 @@ public class Controller implements Initializable {
         emojiGrid.setPadding(new Insets(4));
 
         int i = 0;
-        Button[] emojiButtons = new Button[EMOJIS.length];
-        for (String emoji : EMOJIS) {
+        Button[] emojiButtons = new Button[emojis.length];
+        for (String emoji : emojis) {
             Button button = new Button(emoji);
             button.setOnAction(event -> {
                 inputArea.appendText(emoji);
@@ -177,7 +177,7 @@ public class Controller implements Initializable {
             emojiButtons[i++] = button;
         }
 
-        for (i = 0; i < EMOJIS.length; i++) {
+        for (i = 0; i < emojis.length; i++) {
             emojiGrid.add(emojiButtons[i], i % 8, i / 8);
         }
 

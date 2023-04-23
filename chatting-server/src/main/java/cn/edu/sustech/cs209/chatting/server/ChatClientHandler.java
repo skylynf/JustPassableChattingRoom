@@ -22,7 +22,7 @@ public class ChatClientHandler implements Runnable {
 
     private ScheduledExecutorService heartbeatExecutor;
     private long lastHeartbeatTime;
-    private final long HEARTBEAT_INTERVAL = 2000; // 2 seconds
+    private final long heartBeatInterval = 2000; // 2 seconds
 
     public ChatClientHandler(Socket clientSocket, Server chatServer) {
         this.clientSocket = clientSocket;
@@ -114,7 +114,7 @@ public class ChatClientHandler implements Runnable {
 
     private void heartbeat() {
         out.println("[heartbeat]");
-        if (System.currentTimeMillis() - lastHeartbeatTime > HEARTBEAT_INTERVAL * 2) {
+        if (System.currentTimeMillis() - lastHeartbeatTime > heartBeatInterval * 2) {
             System.out.println("Client is down");
             chatServer.removeClient(this);
             StringBuilder clientsList = new StringBuilder("[clients] ");
@@ -162,7 +162,7 @@ public class ChatClientHandler implements Runnable {
             if (target.startsWith("GROUP[")) {
                 String[] targets = target.split("\\[")[1].split("]")[0].split("/");
                 System.out.println(Arrays.toString(targets));
-                for(String t : targets) {
+                for (String t : targets) {
                     if (!Objects.equals(t, clientName) && chatServer.getClients().containsKey(t))
                         chatServer.getClients().get(t).sendMessage(msg);
                 }
