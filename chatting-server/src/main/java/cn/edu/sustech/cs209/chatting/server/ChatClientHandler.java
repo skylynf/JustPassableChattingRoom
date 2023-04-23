@@ -48,13 +48,13 @@ public class ChatClientHandler implements Runnable {
             out.println(clientsList);
 
             String loginMessage = in.readLine();
-            if (loginMessage.startsWith("[login]")){
+            if (loginMessage.startsWith("[login]")) {
                String[] split = loginMessage.split(" ",3);
                String username = split[1];
                String pwd = split[2];
                //check pwd
                int checkResult = chatServer.checkAccount(username, pwd);
-               if (checkResult==1){
+               if (checkResult==1) {
                    out.println("[loginResult] success");
                    clientName = username;
                    //recovery history
@@ -62,11 +62,11 @@ public class ChatClientHandler implements Runnable {
                    for (Message msg : historyMessage) {
                        out.println("[message] "+ msg.toString());
                    }
-               } else if (checkResult==0){
+               } else if (checkResult==0) {
                    out.println("[loginResult] fail");
                    chatServer.removeClient(this);
                    clientSocket.close();
-               } else if (checkResult==2){
+               } else if (checkResult==2) {
                    out.println("[loginResult] new");
                    clientName = username;
                }
@@ -96,7 +96,7 @@ public class ChatClientHandler implements Runnable {
                     }
                     handleMessage(message);
                 }
-            } catch (SocketException e){
+            } catch (SocketException e) {
                 System.out.println("Possibly Client Disconnected");
             }
 
@@ -129,7 +129,7 @@ public class ChatClientHandler implements Runnable {
         }
     }
 
-    public void sendClient(String message){
+    public void sendClient(String message) {
         out.println(message);
     }
 
@@ -142,14 +142,14 @@ public class ChatClientHandler implements Runnable {
 
     private void handleMessage(String message) {
         // Handle incoming messages from the client
-        if (Objects.equals(message, "getUsers")){
+        if (Objects.equals(message, "getUsers")) {
             StringBuilder clientsList = new StringBuilder("[clients] ");
             for (String name : chatServer.getClients().keySet()) {
                 clientsList.append(name).append(",");
             }
             System.out.println(clientsList);
             out.println(clientsList);
-        } else if (message.startsWith("[send]")){
+        } else if (message.startsWith("[send]")) {
             String[] split = message.split(" ",2);
 
             Message msg = Message.fromString(split[1]);
@@ -159,19 +159,19 @@ public class ChatClientHandler implements Runnable {
             String target = msg.getSendTo();
             // String data = msg.getData();
 
-            if (target.startsWith("GROUP[")){
+            if (target.startsWith("GROUP[")) {
                 String[] targets = target.split("\\[")[1].split("]")[0].split("/");
                 System.out.println(Arrays.toString(targets));
-                for(String t : targets){
+                for(String t : targets) {
                     if (!Objects.equals(t, clientName) && chatServer.getClients().containsKey(t))
                         chatServer.getClients().get(t).sendMessage(msg);
                 }
             } else {
                 chatServer.getClients().get(target).sendMessage(msg);
             }
-        } else if (message.startsWith("[heartbeat]")){
+        } else if (message.startsWith("[heartbeat]")) {
             lastHeartbeatTime = System.currentTimeMillis();
-        } else if (message.startsWith("[register]")){
+        } else if (message.startsWith("[register]")) {
             String[] split = message.split(" ",2);
             String pwd = split[1];
             //save pwd to local file
